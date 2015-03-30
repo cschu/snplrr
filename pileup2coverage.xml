@@ -1,0 +1,25 @@
+<tool id="pileup2coverage" name="pileup2coverage">
+	<description>Extract coverage from pileup.</description>
+	<requirements>
+	  <requirement type="package" version="2.7.4">python</requirement>
+	</requirements>
+	<command interpreter="python">pileup2coverage.py
+                --refcontigs="${refContigs}"
+                --pileup="${pileupFile}"
+
+		--out="${coverageSummary}"
+		--logfile="${pil2cov_log}"
+	</command>
+	<inputs>
+		<param name="refContigs" type="data" format="fasta" label="Please provide reference contigs."/>
+		<param name="pileupFile" type="data" format="txt" label="Please provide a pileup file."/>
+	</inputs>
+	<outputs>
+		<data format="tabular" name="coverageSummary" label="${tool.name} output for ${on_string}" />
+		<data format="txt" name="pil2cov_log" labe="${tool.name}.logfile for ${on_string" />
+	</outputs>
+
+	<help>
+	...
+	</help>
+</tool>
