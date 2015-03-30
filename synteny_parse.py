@@ -1,40 +1,57 @@
 #!/usr/bin/env python
 
+import os
 import sys
+import argparse
 from Bio.Blast import NCBIXML
 
-E_VALUE_THRESHOLD = 1e-10
-IDENTITY_THRESHOLD = 0.75
-QCOV_THRESHOLD = 0.75
+def doStuff(args):
+    blast_records = NCBIXML.parse(open(args.blastXMLInput))
+    
+    with open(args.blastHitsTSV, 'wb') as out:
+        for blast_record in blast_records:
+            qlen = blast_record.query_length        
+            qid = blast_record.query
+            hits[qid] = []
+            for alignment in blast_record.alignments:            
+                sid = alignment.title.split()[1]
+                tid = sid.split('|')[0]
+                for hsp in alignment.hsps:
+                    if hsp.expect >= args.evalue:
+                        continue
+                    qcov = (hsp.query_end - hsp.query_start + 1.0) / qlen
+                    if qcov < args.min_query_coverage:
+                        continue
+                    identity = hsp.identities / float(hsp.align_length)
+                    if identity < args.min_identity:
+                        continue
+               
+                    hit = (tid, sid, hsp.expect, qcov, qlen, hsp.align_length, identity)
+                    out.write('\t'.join([qid] + map(str, hit)) + '\n')  
+    pass
+
 
 def main(argv):
-    blast_records = NCBIXML.parse(open(argv[0]))
-    hits = {}
+    
+    descr = ''
+    parser = argparse.ArgumentParser(description=descr)        
+    parser.add_argument('--evalue', type=float, default=1e-10)
+    parser.add_argument('--min-identity', type=float, default=0.75)
+    parser.add_argument('--min-query-coverage', type=float, default=0.75)
+    parser.add_argument('blastXMLInput', type=str)
+    parser.add_argument('blastHitsTSV', type=str)
 
-    for blast_record in blast_records:
-        qlen = blast_record.query_length        
-        qid = blast_record.query
-        hits[qid] = []
-        for alignment in blast_record.alignments:            
-            sid = alignment.title.split()[1]
-            tid = sid.split('|')[0]
-            for hsp in alignment.hsps:
-                if hsp.expect >= E_VALUE_THRESHOLD:
-                    continue
-                qcov = (hsp.query_end - hsp.query_start + 1.0) / qlen
-                if qcov < QCOV_THRESHOLD:
-                    continue
-                identity = hsp.identities / float(hsp.align_length)
-                if identity < IDENTITY_THRESHOLD:
-                    continue
-                
-                hit = (tid, sid, hsp.expect, qcov, qlen, hsp.align_length, identity)
-                print '\t'.join([qid] + map(str, hit))
-                
-                hits[qid].append(hit)
-                
+    try:
+        args = parser.parse_args()
+    except:
+        sys.exit(1)
 
-                
+    if not os.path.exists(args.blastXMLInput):
+        sys.stderr.write('Input file (%s) is missing.\n' % args.blastXMLInput)
+        sys.exit(1)
+
+    doStuff(args)
+      
     pass
 
 
