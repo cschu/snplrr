@@ -2,6 +2,7 @@
 	<description>Extract secreted protein sequences</description>
 	<requirements>
 	  <requirement type="package" version="2.7.4">python</requirement>	  
+	  <requirement type="package" version="1.65">biopython</requirement>
 	</requirements>
 	<command interpreter="python">synteny_parse.py
 		--evalue="${minE.value}"

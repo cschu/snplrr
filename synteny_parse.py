@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 import sys
-from Bio.Blast import NCBIXML
+#from Bio.Blast import NCBIXML
+from Bio import Blast
 
 E_VALUE_THRESHOLD = 1e-10
 IDENTITY_THRESHOLD = 0.75
