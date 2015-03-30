@@ -1,0 +1,26 @@
+<tool id="synteny_parse" name="synteny_parse">
+	<description>Extract secreted protein sequences</description>
+	<requirements>
+	  <requirement type="package" version="2.7.4">python</requirement>	  
+	</requirements>
+	<command interpreter="python">synteny_parse.py
+		--evalue="${minE.value}"
+		--min-identity="${minID.value}"
+		--min-query-coverage="${minQCOV.value}"		
+		$blastXML_in $out
+		</command>
+	<inputs>
+		<param name="minE.value" type="float" label="e-value cutoff" />
+		<param name="minID.value" type="float" label="identity cutoff" />
+		<param name="minQCOV.value" type="float" label="query-coverage cutoff" />
+ amino acid sequences" />
+	</inputs>
+	<outputs>
+		<data format="tabular" name="out" label="SignalP-predicted secreted peptides ${on_string}" />
+	</outputs>
+
+	<help>
+		This tool does stuff.
+	</help>
+</tool>
+
