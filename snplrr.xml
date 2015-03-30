@@ -1,0 +1,40 @@
+<tool id="snplrr" name="snplrr">
+	<description>SNP/NB-LRR: SNP/NB-LRR analysis</description>
+	<requirements>
+	  <requirement type="package" version="2.7.4">python</requirement>
+	</requirements>
+	<command interpreter="python">snplrr.py
+                --refcontigs="${refContigs}"
+
+                --controlMP="${controlMP}"
+                --controlVCF="${controlVCF}"
+
+                --susP-vs-resMP="${susP_vs_resMP}"
+                --susP-vs-resVCF="${susP_vs_resVCF}"
+
+                --susBulk-vs-resMP="${susBulk_vs_resMP}"
+                --susBulk-vs-resVCF="${susBulk_vs_resVCF}"
+
+		--contig-summary="${contigSummary}"
+		--snp-table="${snpTable}"
+		--logfile="${snplrr_log}"
+	</command>
+	<inputs>
+		<param name="refContigs" type="data" format="fasta" label="Please provide reference contigs."/>
+		<param name="controlMP" type="data" format="mpileup" label="Mpileup pileup file of resistant parents against reference."/>
+		<param name="controlVCF" type="data" format="vcf" label="VCF file of resistant parents against reference."/>
+		<param name="susP_vs_resMP" type="data" format="mpileup" label="Mpileup pileup file of susceptible parents against reference."/>
+		<param name="susP_vs_resVCF" type="data" format="vcf" label="VCF file of susceptible parents against reference."/>
+		<param name="susBulk_vs_resMP" type="data" format="mpileup" label="Mpileup pileup file of susceptible bulk against reference."/>
+		<param name="susBulk_vs_resVCF" type="data" format="vcf" label="VCF file of susceptible bulk against reference."/>
+	</inputs>
+	<outputs>
+		<data format="tabular" name="contigSummary" label="${tool.name} contig summary for ${on_string}" />
+		<data format="tabular" name="snpTable" label="${tool.name} SNP table for ${on_string}" />
+		<data format="txt" name="snplrr_log" label="${tool.name} logfile for ${on_string}" />
+	</outputs>
+
+	<help>
+	This tool generates a summary of a SNP-calling pipeline in for NB-LRR characterisation (?correct?).
+	</help>
+</tool>

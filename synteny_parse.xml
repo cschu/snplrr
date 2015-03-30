@@ -10,13 +10,14 @@
 		$blastXML_in $out
 		</command>
 	<inputs>
-		<param name="minE.value" type="float" label="e-value cutoff" />
-		<param name="minID.value" type="float" label="identity cutoff" />
-		<param name="minQCOV.value" type="float" label="query-coverage cutoff" />
+		<param name="blastXML_in" type="data" format="xml" label="BLAST xml output" />
+		<param name="minE" type="float" value="1e-10" label="e-value cutoff" />
+		<param name="minID" type="float" value="0.75" label="identity cutoff" />
+		<param name="minQCOV" type="float" value="0.75" label="query-coverage cutoff" />
  amino acid sequences" />
 	</inputs>
 	<outputs>
-		<data format="tabular" name="out" label="SignalP-predicted secreted peptides ${on_string}" />
+		<data format="tabular" name="out" label="Filtered Blast results ${on_string}" />
 	</outputs>
 
 	<help>
