@@ -193,14 +193,14 @@ def run_snplrr(refContigs, contigSummary, snpTable,
     logfile.flush()
     tstamp = time.time()
     coverage_susP = getAverageSNPCoverage(susPSNPs_d, contigLengths)
-    coverage_susBulk = getAverageSNPCoverage(susBSNPs_d, contigLengths)
+    coverage_susB = getAverageSNPCoverage(susBSNPs_d, contigLengths)
     logfile.write(' %is\n' % int((time.time() - tstamp) + 0.5))
     
     logfile.write('Counting SNPs per contig...')
     logfile.flush()
     tstamp = time.time()
     snpCount_susP = countSNPsPerContig(susPSNPs)
-    snpCount_susBulk = countSNPsPerContig(susBSNPs)
+    snpCount_susB = countSNPsPerContig(susBSNPs)
     logfile.write(' %is\n' % int((time.time() - tstamp) + 0.5))
     
     # first step
