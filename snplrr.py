@@ -260,7 +260,7 @@ def run_snplrr(refContigs, contigSummary, snpTable,
 
 
     for contig in sorted(susHomocontigs):
-        row = [contig, seqLengths.get(contig, 0), 
+        row = [contig, contigLengths.get(contig, 0), 
                '%.3f' % coverage_susP.get(contig, 0), 
                '%.3f' % coverage_susB.get(contig, 0),
                int(snpCount_susP.get(contig, 0)),
