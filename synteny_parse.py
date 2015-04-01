@@ -7,7 +7,7 @@ import argparse
 #from Bio import Blast
 
 from Bio.Blast import NCBIXML
-from Blast import NCBIXML
+# from Blast import NCBIXML
 
 
 def doStuff(args):
@@ -17,7 +17,7 @@ def doStuff(args):
         for blast_record in blast_records:
             qlen = blast_record.query_length        
             qid = blast_record.query
-            hits[qid] = []
+            # hits[qid] = []
             for alignment in blast_record.alignments:            
                 sid = alignment.title.split()[1]
                 tid = sid.split('|')[0]
