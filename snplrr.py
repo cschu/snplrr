@@ -14,6 +14,13 @@ except:
 
 import vcf
 
+TABLEHEADER = ['contig', 'length', 
+               'avg(coverage, susP)', 'avg(coverage, susBulk)',
+               '#SNPs(susP)', '#SNPs(susBulk)', '#SNPs(common)',
+               'SNP_freq(susP)', 'SNP_freq(susBulk)', 'SNP_freq(common)']
+    
+
+
 NO_FILTER = 0
 GTYPE_HOMOZYGOUS_REF = 1
 GTYPE_HOMOZYGOUS_ALT = 2
@@ -168,21 +175,18 @@ def run_snplrr(refContigs, contigSummary, snpTable,
     logfile.write('susBSNPs_d/susBSNPs: %i/%i\n' % (len(susBSNPs), len(susBSNPs)))
 
     # variant positions common to susceptible parents and bulk
-    susVarCommon = susPSNPs.intersection(susBSNPs)
-    logfile.write('susVarCommon: %i\n' % len(susVarCommon))
+    #susVarCommon = susPSNPs.intersection(susBSNPs)
+    #logfile.write('susVarCommon: %i\n' % len(susVarCommon))
     # variant positions only occurring in either parents or bulk
-    susVarUnique = susPSNPs.union(susBSNPs).difference(susVarCommon)
-    logfile.write('susVarUnique: %i\n' % len(susVarUnique))
+    #susVarUnique = susPSNPs.union(susBSNPs).difference(susVarCommon)
+    #logfile.write('susVarUnique: %i\n' % len(susVarUnique))
     # invariant positions common to susceptible parents and bulk
-    susInvCommon = set([(contig, pos + 1) 
-                        for contig in contigLengths
-                        for pos in xrange(contigLengths[contig])
-                        if (contig, pos + 1) not in susVarCommon.union(susVarUnique)])
-    logfile.write('susInvCommon: %i\n' % len(susInvCommon))
-    return None
-
-                            
-    
+    # susInvCommon = set([(contig, pos + 1) 
+    #                     for contig in contigLengths
+    #                     for pos in xrange(contigLengths[contig])
+    #                     if (contig, pos + 1) not in susVarCommon.union(susVarUnique)])
+    # logfile.write('susInvCommon: %i\n' % len(susInvCommon))
+    # return None
 
     logfile.write('Calculating SNP coverage/contig...')
     logfile.flush()
@@ -202,16 +206,12 @@ def run_snplrr(refContigs, contigSummary, snpTable,
     # any position in the control set that shows a variant
     # cannot be reliably used
     # remove those positions from the susceptible sets
-    """
-    # ignore step in current analysis, where reference is 
-    # different cultivar
     logfile.write('Getting rid off variant positions in reference...')
     logfile.flush()
     tstamp = time.time()
     susPSNPs.difference_update(controlSNPs)
     susBulkSNPs.difference_update(controlSNPs)
     logfile.write(' %is\n' % int((time.time() - tstamp) + 0.5))
-    """
     #logfile.write('Getting rid off heterozygous positions in resP...')
     #logfile.flush()
     #tstamp = time.time()
@@ -251,11 +251,8 @@ def run_snplrr(refContigs, contigSummary, snpTable,
     logfile.flush()
     tstamp = time.time()
     out_contigSummary = open(contigSummary, 'wb')
-    header = ['contig', 'length', 
-              'avg(coverage, susP)', 'avg(coverage, susBulk)',
-              '#SNPs(susP)', '#SNPs(susBulk)', '#SNPs(common)',
-              'SNP_freq(susP)', 'SNP_freq(susBulk)', 'SNP_freq(common)']
-    out_contigSummary.write('\t'.join(header) + '\n')
+    
+    out_contigSummary.write('\t'.join(TABLEHEADER) + '\n')
 
 
 

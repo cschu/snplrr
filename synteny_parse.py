@@ -9,11 +9,14 @@ import argparse
 from Bio.Blast import NCBIXML
 # from Blast import NCBIXML
 
+TABLEHEADER = ['contigID', 'refID', 'refIDlong', 'e-value', 
+               'query_coverage', 'query_length', 'alignment_length', 'identity']
 
 def doStuff(args):
     blast_records = NCBIXML.parse(open(args.blastXMLInput))
     
     with open(args.blastHitsTSV, 'wb') as out:
+        out.write('\t'.join(TABLEHEADER) + '\n')
         for blast_record in blast_records:
             qlen = blast_record.query_length        
             qid = blast_record.query
