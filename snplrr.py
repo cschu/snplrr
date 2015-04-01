@@ -167,6 +167,7 @@ def run_snplrr(refContigs, contigSummary, snpTable,
     resPSNPs_d, resPSNPs = getVariantData_(resP_vs_refVCF, crit=crit, 
                                            setLabel='resP', logfile=logfile)
     logfile.write('resPSNPs_d/resPSNPs: %i/%i\n' % (len(resPSNPs), len(resPSNPs)))
+    crit = GTYPE_HOMOZYGOUS_ALT
     susPSNPs_d, susPSNPs = getVariantData_(susP_vs_refVCF, crit=crit,
                                            setLabel='susP', logfile=logfile)
     logfile.write('susPSNPs_d/susPSNPs: %i/%i\n' % (len(susPSNPs), len(susPSNPs)))
