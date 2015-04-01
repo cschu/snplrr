@@ -192,14 +192,14 @@ def run_snplrr(refContigs, contigSummary, snpTable,
     logfile.flush()
     tstamp = time.time()
     coverage_susP = getAverageSNPCoverage(susPSNPs_d, contigLengths)
-    coverage_susBulk = getAverageSNPCoverage(susBulkSNPs_d, contigLengths)
+    coverage_susBulk = getAverageSNPCoverage(susBSNPs_d, contigLengths)
     logfile.write(' %is\n' % int((time.time() - tstamp) + 0.5))
     
     logfile.write('Counting SNPs per contig...')
     logfile.flush()
     tstamp = time.time()
     snpCount_susP = countSNPsPerContig(susPSNPs)
-    snpCount_susBulk = countSNPsPerContig(susBulkSNPs)
+    snpCount_susBulk = countSNPsPerContig(susBSNPs)
     logfile.write(' %is\n' % int((time.time() - tstamp) + 0.5))
     
     # first step
@@ -210,7 +210,7 @@ def run_snplrr(refContigs, contigSummary, snpTable,
     logfile.flush()
     tstamp = time.time()
     susPSNPs.difference_update(controlSNPs)
-    susBulkSNPs.difference_update(controlSNPs)
+    susBSNPs.difference_update(controlSNPs)
     logfile.write(' %is\n' % int((time.time() - tstamp) + 0.5))
     #logfile.write('Getting rid off heterozygous positions in resP...')
     #logfile.flush()
@@ -220,10 +220,10 @@ def run_snplrr(refContigs, contigSummary, snpTable,
     # second step
     # all homozygous SNPs that are common between susceptible parents
     # and bulk may indicate NB-LRR contigs
-    logfile.write('Finding common SNPs between susP and susBulk...')
+    logfile.write('Finding common SNPs between susP and susB...')
     logfile.flush()
     tstamp = time.time()
-    commonSusSNPs = susPSNPs.intersection(susBulkSNPs)
+    commonSusSNPs = susPSNPs.intersection(susBSNPs)
     snpCount_common = countSNPsPerContig(commonSusSNPs)
     logfile.write(' %is\n' % int((time.time() - tstamp) + 0.5))
 
@@ -233,7 +233,7 @@ def run_snplrr(refContigs, contigSummary, snpTable,
     logfile.write('Gathering non-chimeric contigs...')
     logfile.flush()
     tstamp = time.time()
-    susPOnlySNPs = susPSNPs.difference(susBulkSNPs)
+    susPOnlySNPs = susPSNPs.difference(susBSNPs)
     susPOnlyContigs = set([x[0] for x in susPOnlySNPs])
     
     commonSusContigs = set([x[0] for x in commonSusSNPs])
@@ -261,9 +261,9 @@ def run_snplrr(refContigs, contigSummary, snpTable,
     for contig in sorted(susHomocontigs):
         row = [contig, seqLengths.get(contig, 0), 
                '%.3f' % coverage_susP.get(contig, 0), 
-               '%.3f' % coverage_susBulk.get(contig, 0),
+               '%.3f' % coverage_susB.get(contig, 0),
                int(snpCount_susP.get(contig, 0)),
-               int(snpCount_susBulk.get(contig, 0)),
+               int(snpCount_susB.get(contig, 0)),
                int(snpCount_common.get(contig, 0))]
         if row[1] == 0:
             row.extend(['N/A', 'N/A', 'N/A'])
@@ -288,7 +288,7 @@ def run_snplrr(refContigs, contigSummary, snpTable,
         row = [contig, pos,] + \
                (list(reversed(controlSNPs_d.get((contig, pos), NA)[:-1]))) + \
                (list(reversed(susPSNPs_d.get((contig, pos), NA)[:-1]))) + \
-               (list(reversed(susBulkSNPs_d.get((contig, pos), NA)[:-1]))) 
+               (list(reversed(susBSNPs_d.get((contig, pos), NA)[:-1]))) 
         row.append('YES' if row[-2] == row[-4] else 'NO')
         out_snpTable.write('\t'.join(map(str, row)) + '\n')
     out_snpTable.close()
