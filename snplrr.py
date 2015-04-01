@@ -209,8 +209,8 @@ def run_snplrr(refContigs, contigSummary, snpTable,
     logfile.write('Getting rid off variant positions in reference...')
     logfile.flush()
     tstamp = time.time()
-    susPSNPs.difference_update(controlSNPs)
-    susBSNPs.difference_update(controlSNPs)
+    susPSNPs.difference_update(resPSNPs)
+    susBSNPs.difference_update(resPSNPs)
     logfile.write(' %is\n' % int((time.time() - tstamp) + 0.5))
     #logfile.write('Getting rid off heterozygous positions in resP...')
     #logfile.flush()
@@ -286,7 +286,7 @@ def run_snplrr(refContigs, contigSummary, snpTable,
     NA = ('NA', 'NA')
     for contig, pos in sorted(commonSusSNPs, key=lambda x:(x[0],int(x[1]))):
         row = [contig, pos,] + \
-               (list(reversed(controlSNPs_d.get((contig, pos), NA)[:-1]))) + \
+               (list(reversed(resPSNPs_d.get((contig, pos), NA)[:-1]))) + \
                (list(reversed(susPSNPs_d.get((contig, pos), NA)[:-1]))) + \
                (list(reversed(susBSNPs_d.get((contig, pos), NA)[:-1]))) 
         row.append('YES' if row[-2] == row[-4] else 'NO')
