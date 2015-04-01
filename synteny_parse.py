@@ -4,7 +4,11 @@ import os
 import sys
 import argparse
 
+#from Bio import Blast
+
 from Bio.Blast import NCBIXML
+from Blast import NCBIXML
+
 
 def doStuff(args):
     blast_records = NCBIXML.parse(open(args.blastXMLInput))
