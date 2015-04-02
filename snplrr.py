@@ -22,7 +22,7 @@ CONTIG_TABLEHEADER = ['contig', 'length',
                       'Synteny_GM', 'NLR-motifs?']
 
 SNP_TABLEHEADER = ['contig', 'pos', 
-                   'resP/Ref:base', 'resP/Ref:coverage', 
+                   # 'resP/Ref:base', 'resP/Ref:coverage', 
                    'susP/Ref:base', 'susP/Ref:coverage',  
                    'susBulk/Ref:base','susBulk/Ref:coverage',
                    'susP identical to susBulk?'] 
@@ -43,9 +43,11 @@ GENOTYPES = {'0/0': GTYPE_HOMOZYGOUS_REF,
 logfile = None
 
 def getMASTInformation(fn):    
+    global logfile
     reader = csv.reader(open(fn), delimiter='\t', quotechar='"')
     mastInfo = {}
     for row in reader:
+        # logfile.write(str(row) + '\n')
         if row[0].startswith('#'):
             continue
         if row[0] not in mastInfo:
@@ -130,7 +132,11 @@ def getSequenceLengths(fn):
 
 def getAverageSNPCoverage(SNPpos, contigLengths):
     coverage = dict([(cid, []) for cid in contigLengths]) 
+    global logfile
+    logfile.write(str(coverage.keys()) + '\n')
+   
     for snp in SNPpos:
+        logfile.write(str(snp) + '\n')     
         coverage[snp[0]].append(SNPpos[snp][0])
     for contig in coverage:
         if coverage[contig]:
@@ -331,8 +337,8 @@ def run_snplrr(refContigs, contigSummary, snpTable,
 
     NA = ('NA', 'NA')
     for contig, pos in sorted(commonSusSNPs, key=lambda x:(x[0],int(x[1]))):
+        # (list(reversed(resPSNPs_d.get((contig, pos), NA)[:-1]))) + \
         row = [contig, pos,] + \
-               (list(reversed(resPSNPs_d.get((contig, pos), NA)[:-1]))) + \
                (list(reversed(susPSNPs_d.get((contig, pos), NA)[:-1]))) + \
                (list(reversed(susBSNPs_d.get((contig, pos), NA)[:-1]))) 
         row.append('YES' if row[-2] == row[-4] else 'NO')
