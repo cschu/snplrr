@@ -30,7 +30,7 @@
 		<param name="susP_vs_resVCF" type="data" format="vcf" label="VCF file of susceptible parents against reference."/>
 		<param name="susBulk_vs_resMP" type="data" format="mpileup" label="Mpileup pileup file of susceptible bulk against reference."/>
 		<param name="susBulk_vs_resVCF" type="data" format="vcf" label="VCF file of susceptible bulk against reference."/>
-		<param name="syntenyTable" type="data" format="tabular" label="Syteny information with G. max."/>
+		<param name="syntenyTable" type="data" format="tabular" label="Synteny information with G. max."/>
 		<param name="mastTable" type="data" format="tabular" label="meme/mast/NLR-Parser output."/>
 	</inputs>
 	<outputs>
