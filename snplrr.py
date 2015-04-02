@@ -321,7 +321,7 @@ def run_snplrr(refContigs, contigSummary, snpTable,
         # don't like this so much
         def f(x):
             return ('%s/%s' % x) if x != 'NA' else x
-        row.append(','.join(sorted(map(f, mastInfo.get(contig, ['NA']))))
+        row.append(','.join(sorted(map(f, mastInfo.get(contig, ['NA'])))))
 
         out_contigSummary.write('\t'.join(map(str, row)) + '\n')
     out_contigSummary.close()
