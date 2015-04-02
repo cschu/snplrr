@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import csv
 import sys
 import time
 import datetime
@@ -14,10 +15,18 @@ except:
 
 import vcf
 
-TABLEHEADER = ['contig', 'length', 
-               'avg(coverage, susP)', 'avg(coverage, susBulk)',
-               '#SNPs(susP)', '#SNPs(susBulk)', '#SNPs(common)',
-               'SNP_freq(susP)', 'SNP_freq(susBulk)', 'SNP_freq(common)']
+CONTIG_TABLEHEADER = ['contig', 'length', 
+                      'avg(coverage, susP)', 'avg(coverage, susBulk)',
+                      '#SNPs(susP)', '#SNPs(susBulk)', '#SNPs(common)',
+                      'SNP_freq(susP)', 'SNP_freq(susBulk)', 'SNP_freq(common)',
+                      'Synteny_GM', 'NLR-motifs?']
+
+SNP_TABLEHEADER = ['contig', 'pos', 
+                   'resP/Ref:base', 'resP/Ref:coverage', 
+                   'susP/Ref:base', 'susP/Ref:coverage',  
+                   'susBulk/Ref:base','susBulk/Ref:coverage',
+                   'susP identical to susBulk?'] 
+    
     
 
 
@@ -32,6 +41,35 @@ GENOTYPES = {'0/0': GTYPE_HOMOZYGOUS_REF,
              '0/1': GTYPE_HETEROZYGOUS}
 
 logfile = None
+
+def getMASTInformation(fn):    
+    reader = csv.reader(open(fn), delimiter='\t', quotechar='"')
+    mastInfo = {}
+    for row in reader:
+        if row[0].startswith('#'):
+            continue
+        if row[0] not in mastInfo:
+            mastInfo[row[0]] = set([])
+        mastInfo[row[0]].add((row[1].replace('N/A', '???'), row[2]))
+    return mastInfo
+
+
+def getSyntenyInformation(fn):
+    reader = csv.reader(open(fn), delimiter='\t', quotechar='"')
+    syntenyInfo = {}
+    for row in reader:
+        if row[0].startswith('#'):
+            continue
+        if row[0] not in syntenyInfo:
+            syntenyInfo[row[0]] = set()    
+        syntenyInfo[row[0]].add(row[1])
+    return syntenyInfo
+
+
+        
+
+
+
 
 def anabl_getSeqsFromFASTA(fn):
     """
@@ -159,7 +197,8 @@ def getVariantData_(vcf, setLabel='', crit=NO_FILTER, logfile=sys.stdout):
 def run_snplrr(refContigs, contigSummary, snpTable,
                resP_vs_refMP, resP_vs_refVCF, 
                susP_vs_refMP, susP_vs_refVCF, 
-               susB_vs_refMP, susB_vs_refVCF):
+               susB_vs_refMP, susB_vs_refVCF,
+               syntenyTable, mastOutput):
 
     global logfile
     contigLengths = getContigLengths_(refContigs, logfile=logfile)
@@ -174,6 +213,9 @@ def run_snplrr(refContigs, contigSummary, snpTable,
     susBSNPs_d, susBSNPs = getVariantData_(susB_vs_refVCF, crit=crit,
                                            setLabel='susBulk', logfile=logfile)
     logfile.write('susBSNPs_d/susBSNPs: %i/%i\n' % (len(susBSNPs), len(susBSNPs)))
+
+    syntenyInfo = getSyntenyInformation(syntenyTable)
+    mastInfo = getMASTInformation(mastTable)
 
     # variant positions common to susceptible parents and bulk
     #susVarCommon = susPSNPs.intersection(susBSNPs)
@@ -253,7 +295,7 @@ def run_snplrr(refContigs, contigSummary, snpTable,
     tstamp = time.time()
     out_contigSummary = open(contigSummary, 'wb')
     
-    out_contigSummary.write('\t'.join(TABLEHEADER) + '\n')
+    out_contigSummary.write('\t'.join(CONTIG_TABLEHEADER) + '\n')
 
 
 
@@ -267,22 +309,25 @@ def run_snplrr(refContigs, contigSummary, snpTable,
                int(snpCount_susB.get(contig, 0)),
                int(snpCount_common.get(contig, 0))]
         if row[1] == 0:
-            row.extend(['N/A', 'N/A', 'N/A'])
+            row.extend(['NA', 'NA', 'NA'])
         else:
             row.extend(['%.3f' % (row[-3]/float(row[1])),
                         '%.3f' % (row[-2]/float(row[1])),
                         '%.3f' % (row[-1]/float(row[1]))])
         row[4:7] = map(lambda x:'%.3f'%x, row[4:7])
+
+        row.append(','.join(sorted(syntenyInfo.get(contig, ['NA']))))
+        
+        # don't like this so much
+        def f(x):
+            return ('%s/%s' % x) if x != 'NA' else x
+        row.append(','.join(sorted(map(f, mastInfo.get(contig, ['NA']))))
+
         out_contigSummary.write('\t'.join(map(str, row)) + '\n')
     out_contigSummary.close()
 
     out_snpTable = open(snpTable, 'wb')
-    header = ['contig', 'pos', 
-              'resP/Ref:base', 'resP/Ref:coverage', 
-              'susP/Ref:base', 'susP/Ref:coverage',  
-              'susBulk/Ref:base','susBulk/Ref:coverage',
-              'susP identical to susBulk?'] 
-    out_snpTable.write('\t'.join(header) + '\n')
+    out_snpTable.write('\t'.join(SNP_TABLEHEADER) + '\n')
 
     NA = ('NA', 'NA')
     for contig, pos in sorted(commonSusSNPs, key=lambda x:(x[0],int(x[1]))):
@@ -314,6 +359,8 @@ def main(argv):
     parser.add_argument('--susBulk-vs-resVCF', help='VCF file of susceptible bulk reads against reference')
     parser.add_argument('--contig-summary', help='Contig summary (tabular).')
     parser.add_argument('--snp-table', help='SNP table.')
+    parser.add_argument('--synteny-table')
+    parser.add_argument('--mast-table')
     parser.add_argument('--logfile', help='A log file.', default='snplrr.log')
     
 
@@ -323,7 +370,8 @@ def main(argv):
         input = [args.refcontigs, args.contig_summary, args.snp_table,
                  args.controlMP, args.controlVCF,
                  args.susP_vs_resMP, args.susP_vs_resVCF,
-                 args.susBulk_vs_resMP, args.susBulk_vs_resVCF]
+                 args.susBulk_vs_resMP, args.susBulk_vs_resVCF,
+                 args.synteny_table, args.mast_table]
     except:
         sys.stderr.write('Error: Invalid input parameters.\n')
         sys.exit(1)
@@ -336,7 +384,8 @@ def main(argv):
     #sys.exit()
     run_snplrr(args.refcontigs, args.contig_summary, args.snp_table,
                args.controlMP, args.controlVCF, args.susP_vs_resMP,
-               args.susP_vs_resVCF, args.susBulk_vs_resMP, args.susBulk_vs_resVCF)
+               args.susP_vs_resVCF, args.susBulk_vs_resMP, args.susBulk_vs_resVCF,
+               args.synteny_table, args.mast_table)
     logfile.close()
 
     pass

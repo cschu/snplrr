@@ -15,6 +15,9 @@
                 --susBulk-vs-resMP="${susBulk_vs_resMP}"
                 --susBulk-vs-resVCF="${susBulk_vs_resVCF}"
 
+                --synteny-table="${syntenyTable}"
+                --mast-table="${mastTable}"
+
 		--contig-summary="${contigSummary}"
 		--snp-table="${snpTable}"
 		--logfile="${snplrr_log}"
@@ -27,6 +30,8 @@
 		<param name="susP_vs_resVCF" type="data" format="vcf" label="VCF file of susceptible parents against reference."/>
 		<param name="susBulk_vs_resMP" type="data" format="mpileup" label="Mpileup pileup file of susceptible bulk against reference."/>
 		<param name="susBulk_vs_resVCF" type="data" format="vcf" label="VCF file of susceptible bulk against reference."/>
+		<param name="syntenyTable" type="data" format="tabular" label="Syteny information with G. max."/>
+		<param name="mastTable" type="data" format="tabular" label="meme/mast/NLR-Parser output."/>
 	</inputs>
 	<outputs>
 		<data format="tabular" name="contigSummary" label="${tool.name} contig summary for ${on_string}" />
