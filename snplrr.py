@@ -198,7 +198,7 @@ def run_snplrr(refContigs, contigSummary, snpTable,
                resP_vs_refMP, resP_vs_refVCF, 
                susP_vs_refMP, susP_vs_refVCF, 
                susB_vs_refMP, susB_vs_refVCF,
-               syntenyTable, mastOutput):
+               syntenyTable, mastTable):
 
     global logfile
     contigLengths = getContigLengths_(refContigs, logfile=logfile)
