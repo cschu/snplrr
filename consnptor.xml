@@ -1,0 +1,24 @@
+<tool id="consnptor" name="conSNPtor">
+	<description>extract SNP sequence contexts</description>
+	<requirements>
+	  <requirement type="package" version="2.7.4">python</requirement>
+	</requirements>
+	<command interpreter="python">consnptor.py
+		--reference="${refContigs}"
+		--vcf="${vcfFile}"
+		--flank="${flankSize}"
+		--out="${outFile}"
+	</command>
+	<inputs>
+		<param name="refContigs" type="data" format="fasta" label="Please provide a Fasta file with reference sequences."/>
+		<param name="vcfFile" type="data" format="vcf,tabular" label="Please provide a VCF file with your variants."/>
+		<param name="flankSize" type="integer" default="250" value="250" label="Flank size for the sequence context."/>
+	</inputs>
+	<outputs>
+		<data format="fasta" name="outFile" label="${tool.name} sequence context fasta for ${on_string}" />
+	</outputs>
+
+	<help>
+	This tool extracts the sequence contexts of a set of SNPs.
+	</help>
+</tool>
