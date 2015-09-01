@@ -36,7 +36,7 @@ def main():
     #    Returns dictionary over all variant positions: {(contig, pos): (count, alt, ref, genotype)}
     contigs = set([snp[0] for snp in snps])
 
-    with open(args.out) as fo:
+    with open(args.out, 'wb') as fo:
         # fo.write(str(contigs) + '\n')
         for id_, seq in getSequences(args.reference):
             # fo.write('%s\n' % id_)
