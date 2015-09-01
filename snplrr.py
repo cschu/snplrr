@@ -43,9 +43,11 @@ GENOTYPES = {'0/0': GTYPE_HOMOZYGOUS_REF,
 logfile = None
 
 def getMASTInformation(fn):    
+    global logfile
     reader = csv.reader(open(fn), delimiter='\t', quotechar='"')
     mastInfo = {}
     for row in reader:
+        logfile.write(str(row) + '\n')
         if row[0].startswith('#'):
             continue
         if row[0] not in mastInfo:
