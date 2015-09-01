@@ -37,12 +37,12 @@ def main():
     contigs = set([snp[0] for snp in snps])
 
     with open(args.out) as fo:
-        fo.write(str(contigs) + '\n')
+        # fo.write(str(contigs) + '\n')
         for id_, seq in getSequences(args.reference):
-            fo.write('%s\n' % id_)
+            # fo.write('%s\n' % id_)
             if id_ in contigs:
                 for snp in snps:
-                    fo.write('%s\n' % str(snp))
+                    # fo.write('%s\n' % str(snp))
                     if snp[0] != id_:
                         continue
                     pos = snp[1]
@@ -52,3 +52,5 @@ def main():
                     fo.write('>%s\n%s\n' % (id_out, seq_out))
 
     pass
+
+if __name__ == '__main__': main()
