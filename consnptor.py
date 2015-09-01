@@ -41,7 +41,7 @@ def main():
         for id_, seq in getSequences(args.reference):
             # fo.write('%s\n' % id_)
             if id_ in contigs:
-                for snp in snps:
+                for snp in sorted(snps):
                     # fo.write('%s\n' % str(snp))
                     if snp[0] != id_:
                         continue
@@ -49,7 +49,7 @@ def main():
                     id_out = '%s:%i:%i-%i' % (id_, pos, max(1, pos - flank), min(len(seq), pos + flank))
                     pos -= 1
                     seq_out = '%s%c%s' % (seq[pos - flank:pos], iupac(snps[snp][1], snps[snp][2]), seq[pos+1:pos+flank+1])
-                    fo.write('>%s\n%s\n' % (id_out, seq_out))
+                    fo.write('>%s\n%s\n' % (id_out, seq_out.upper()))
 
     pass
 
