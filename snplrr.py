@@ -48,7 +48,7 @@ def getMASTInformation(fn):
     mastInfo = {}
     for row in reader:
         # logfile.write(str(row) + '\n')
-        if row[0].startswith('#'):
+        if row[0].startswith('#') or len(row) < 3:
             continue
         if row[0] not in mastInfo:
             mastInfo[row[0]] = set([])
