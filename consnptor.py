@@ -46,7 +46,7 @@ def main():
                     if snp[0] != id_:
                         continue
                     pos = snp[1]
-                    id_out = '%s:%i:%i-%i' % (id_, pos, max(1, pos - flank), min(len(seq), pos + flank))
+                    id_out = '%s:%i:[%c/%c]:%i-%i' % (id_, pos, snps[snp][1], snps[snp][2], max(1, pos - flank), min(len(seq), pos + flank))
                     pos -= 1
                     seq_out = '%s%c%s' % (seq[pos - flank:pos], iupac(snps[snp][1], snps[snp][2]), seq[pos+1:pos+flank+1])
                     fo.write('>%s\n%s\n' % (id_out, seq_out.upper()))
