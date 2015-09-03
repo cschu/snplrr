@@ -10,7 +10,7 @@ def splitSequence(id_, seq, fragsize, overlap):
     while 1:
         if p >= len(seq) - 1:
             break
-        yield p, '%s:%i-%i' % (id_, p + 1, min(len(seq), p + fragsize)), seq[p:p + fragsize]
+        yield '%s:%i-%i' % (id_, p + 1, min(len(seq), p + fragsize)), seq[p:p + fragsize]
         p += (fragsize - overlap)
 
 
