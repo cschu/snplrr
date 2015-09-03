@@ -1,0 +1,24 @@
+<tool id="seqsplitter" name="seqsplitter">
+	<description>splits Fasta sequences into overlapping fragments</description>
+	<requirements>
+	  <requirement type="package" version="2.7.4">python</requirement>
+	</requirements>
+	<command interpreter="python">seqsplitter.py
+		--input="${inFasta}"
+		--fragsize="${fragSize}"
+		--overlap="${overlap}"
+		--output="${outFasta}"
+	</command>
+	<inputs>
+		<param name="inFasta" type="data" format="fasta" label="Please provide a Fasta file."/>
+		<param name="fragSize" type="integer" default="5000" value="5000" label="Size of sequence fragments in bp."/>
+    <param name="overlap" type="integer" default="1000" value="1000" label="Size of fragment overlaps in bp."/>
+	</inputs>
+	<outputs>
+		<data format="fasta" name="outFasta" label="${tool.name} overlapping fragments for ${on_string}" />
+	</outputs>
+
+	<help>
+	This tool splits Fasta sequences into sets of overlapping fragments.
+	</help>
+</tool>

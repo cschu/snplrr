@@ -13,8 +13,6 @@ except:
     sys.exit(0)
 
 
-import vcf
-
 CONTIG_TABLEHEADER = ['contig', 'length',
                       'avg(coverage, susP)', 'avg(coverage, susBulk)',
                       '#SNPs(susP)', '#SNPs(susBulk)', '#SNPs(common)',
@@ -27,9 +25,6 @@ SNP_TABLEHEADER = ['contig', 'pos',
                    'susP/Ref:base', 'susP/Ref:coverage',
                    'susBulk/Ref:base','susBulk/Ref:coverage',
                    'susP identical to susBulk?']
-
-
-
 
 NO_FILTER = 0
 GTYPE_HOMOZYGOUS_REF = 1
@@ -69,11 +64,6 @@ def getSyntenyInformation(fn):
     return syntenyInfo
 
 
-
-
-
-
-
 def anabl_getSeqsFromFASTA(fn):
     """
     Returns generator object to access sequences from a multi-FASTA file.
@@ -107,7 +97,7 @@ def getSNPPositionsFast(vcf_handle, crit=None, sample='Sample1'):
 
 def readVCFQuick(fn, crit=0):
     """
-    Returns dictionary over all variant positions: {(contig, pos): (count, baseCall)}
+    Returns dictionary over all variant positions: {(contig, pos): (count, alt, genotype)}
     """
     for line in open(fn):
         if line.startswith('#'): continue
@@ -386,7 +376,6 @@ def main(argv):
         sys.stderr.write('Error: Invalid input parameters.\n')
         sys.exit(1)
 
-    # test = vcf.Reader(open(args.controlVCF))
     global logfile
     logfile = open(args.logfile, 'wb')
     logfile.write(str(input) + '\n')
